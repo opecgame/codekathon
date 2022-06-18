@@ -1,0 +1,16 @@
+{
+  "name": "codekathon-ws",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "mongoose": "^6.3.8",
+    "qs": "^6.10.5",
+    "querystring": "^0.2.1",
+    "ws": "^8.8.0"
+  }
+}

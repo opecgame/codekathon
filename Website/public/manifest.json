@@ -1,0 +1,10 @@
+{
+    "name": "PKW IoT",
+    "short_name": "PKW IoT",
+    "theme_color": "#e3fbff",
+    "background_color": "#e3fbff",
+    "display": "standalone",
+    "orientation": "portrait",
+    "scope": "/",
+    "start_url": "/"
+}

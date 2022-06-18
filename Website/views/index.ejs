@@ -1,0 +1,134 @@
+<%- include("./include/header") %>
+<%- include("./include/navbar") %>
+<div style="margin-top: 150px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-5 col-sm-12 mb-2">
+                <div class="mb-3 card bg-white text-dark">
+                    <div class="card-body">
+                        <p>
+                            <img src="https://media.discordapp.net/attachments/930143981021589574/974340024319492166/unknown.png"
+                                alt="Student IMG" width="50" style="border-radius: 50px;">ยินดีต้อนรับ 
+                            <%= `${user}` %><br>
+                        </p>
+                    </div>
+                </div>
+                <div class="card bg-white text-dark">
+                    <div class="card-body">
+                        <p>
+                            <center>
+                                <h2>สถานะ</h2>
+                            </center> 
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-6 text-center">
+                                        <h4><i class="fas fa-thermometer-half"></i> อุณหภูมิ</h4>
+                                        <p id="temp">--&deg;C</p>
+                                    </div>
+
+                                    <div class="col-6 text-center">
+                                        <h4><i class="fas fa-humidity"></i> ความชื้น</h4>
+                                        <p id="hum">--%</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-7 col-sm-12">
+                <div class="container">
+                    <div class="row">
+                        <div class="card bg-white text-dark col-lg-12 col-sm-12">
+                            <div class="card-body">
+                                <h2 class="card-title">
+                                    <i class="fas fa-bolt"></i> เครื่องใช้ไฟฟ้าภายในบ้าน
+                                </h2>
+                                <h5><i style="color: orange;" class="fas fa-lightbulb"></i> ไฟหน้าบ้าน</h5>
+                                <input id="17" class="apple-switch text-center" type="checkbox" control-id="ControlID-10">
+                                <h5><i class="fas fa-lightbulb"></i> ไฟในบ้าน</h5>
+                                <input id="27" class="apple-switch text-center" type="checkbox" control-id="ControlID-10">
+                                <h5><i style="color: blue;" class="fas fa-lightbulb"></i> ไฟหลังบ้าน</h5>
+                                <input id="22" class="apple-switch text-center" type="checkbox" control-id="ControlID-10">
+                                <h5><i class="fas fa-volume"></i> เครื่องส่งสัญญาณ</h5>
+                                <input id="21" class="apple-switch text-center" type="checkbox" control-id="ControlID-10">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+
+
+// I need to ajax request
+// get data from server
+// and update the page
+$(document).ready(function() {
+    $.ajax({
+        url: 'https://apicodekathon.opecgame.in.th/getdefault',
+        type: 'GET',
+        dataType: 'json',
+        success: function(res) {
+            document.getElementById('17').checked = res.data.status["17"] ? true : false;
+            document.getElementById('21').checked = res.data.status["21"] ? true : false;
+            document.getElementById('22').checked = res.data.status["22"] ? true : false;
+            document.getElementById('27').checked = res.data.status["27"] ? true : false;
+        }
+    });
+});
+
+
+
+setInterval(() => {
+    $.ajax({
+        url: 'https://apicodekathon.opecgame.in.th/dht',
+        type: 'GET',
+        dataType: 'json',
+        success: function(res) {
+            document.getElementById('temp').innerHTML = res.data.temp + '&deg;C';
+            document.getElementById('hum').innerHTML = res.data.hum + '%';
+        }
+    })
+}, 5000)
+
+
+function getCookie(cname) {
+    let name = cname + "=";
+    let ca = document.cookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+    }
+    }
+    return "";
+}
+
+$("input").on("click", (i) => {
+    console.log(i.target.id);
+    let settings = {
+        "url": "https://apicodekathon.opecgame.in.th/power",
+        "method": "post",
+        "timeout": 0,
+        "async": true,
+        "crossDomain": true,
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": `${getCookie("token")}`
+        },
+        "data": JSON.stringify({
+            "pin": `${i.target.id}`,
+            status: i.target.checked,
+        }),
+    };
+    $.ajax(settings)
+})
+</script>
+<%- include("./include/footer") %>

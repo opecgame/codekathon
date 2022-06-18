@@ -1,0 +1,70 @@
+<%- include("./include/header") %>
+<div class="container" style="margin-top: 25vh;">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center">
+                    <img src="https://media.discordapp.net/attachments/930143981021589574/969973366641557544/PKWLOGO.png"
+                        width="70" height="70" class="img-fluid" alt="PKW Logo" />
+                    <h3>สมัครสมาชิก</h3>
+                    <h4>PKW STRENGTHENS SOCIETY</h4>
+                    </div>
+                    <form id="login">
+                        <div class="form-group mt-4">
+                            <label for="username">ชื่อผู้ใช้</label>
+                            <input type="text" class="form-control" id="username" placeholder="Username">
+                        </div>
+                        <div class="form-group mt-4">
+                            <label for="password">รหัสผ่าน</label>
+                            <input type="password" class="form-control" id="password" placeholder="Password">
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" disabled class="btn btn-primary mt-4">สมัครสมาชิก</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $("#login").submit(function (e) {
+        e.preventDefault();
+        console.log(e);
+        let username = document.getElementById("username").value;
+        let password = document.getElementById("password").value;
+        let settings = {
+            "url": "https://apicodekathon.opecgame.in.th/login",
+            "method": "post",
+            "timeout": 0,
+            "async": true,
+            "crossDomain": true,
+            "headers": {
+                "Content-Type": "application/json",
+            },
+            "data": JSON.stringify({
+                "username": username,
+                "password": password,
+            }),
+        };
+        $.ajax(settings).done(function (response) {
+            console.log(response)
+            document.cookie = `token=${response.data.token}`;
+            Swal.fire({
+                "title": "เข้าสู่ระบบสำเร็จ",
+                "icon": "success",
+            }).then(() => {
+                window.location.replace(`/`)
+            })
+        }).fail(function (response) {
+            Swal.fire({
+                "title": "ไม่สามารถเข้าสู่ระบบได้",
+                "text": response.responseJSON.message,
+                "icon": 'error',
+            })
+        });
+        return false
+    });
+</script>
+<%- include("./include/footer") %>
